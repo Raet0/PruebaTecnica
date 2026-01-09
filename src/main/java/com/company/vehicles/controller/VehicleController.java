@@ -1,0 +1,49 @@
+package com.company.vehicles.controller;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.company.vehicles.dto.VehicleResponseDto;
+import com.company.vehicles.dto.VehicleStockRequestDto;
+import com.company.vehicles.dto.OperationResponseDto;
+import com.company.vehicles.service.VehicleService;
+
+@RestController
+@RequestMapping("/api/vehicles")
+public class VehicleController {
+
+    private final VehicleService vehicleService;
+
+    public VehicleController(VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VehicleResponseDto>> getAllVehicles() {
+        return ResponseEntity.ok(vehicleService.getAllActiveVehicles());
+    }
+
+    @GetMapping("/low-stock-expensive")
+    public ResponseEntity<List<VehicleResponseDto>> getLowStockExpensive() {
+        return ResponseEntity.ok(vehicleService.getLowStockExpensive());
+    }
+
+    @PatchMapping("/delete/{model}")
+    public ResponseEntity<OperationResponseDto> deleteByModel(
+            @PathVariable String model) {
+        return ResponseEntity.ok(vehicleService.deleteByModel(model));
+    }
+
+    @PatchMapping("/stock")
+    public ResponseEntity<VehicleResponseDto> updateStock(
+            @RequestBody VehicleStockRequestDto request) {
+        return ResponseEntity.ok(vehicleService.updateStock(request));
+    }
+}
